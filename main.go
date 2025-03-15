@@ -46,6 +46,15 @@ func ensureFileExists() error {
 	return nil
 }
 
+// fungsi untuk melakakukan generate id
+func generateID(tasks []Task) int {
+	if len(tasks) == 0 {
+		return 1
+	}
+
+	return tasks[len(tasks)-1].ID + 1
+}
+
 var (
 	ErrTaskNotFound     = errors.New("tugas tidak ditemukan")
 	ErrInvalidStatus    = errors.New("status tidak valid")
