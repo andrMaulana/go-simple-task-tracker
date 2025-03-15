@@ -40,3 +40,11 @@ func (s *TaskService) AddTask(description string) (domain.Task, error) {
 	taskList.Tasks = append(taskList.Tasks, newTask)
 	return newTask, nil
 }
+
+func generateID(tasks []domain.Task) int {
+	if len(tasks) == 0 {
+		return 1
+	}
+
+	return tasks[len(tasks)-1].ID + 1
+}
