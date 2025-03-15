@@ -1,6 +1,10 @@
 package application
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/andrMaulana/go-simple-task-tracker/infrastructure"
+)
 
 var (
 	ErrTaskNotFound     = errors.New("tugas tidak ditemukan")
@@ -9,9 +13,9 @@ var (
 )
 
 type TaskService struct {
-	storage Storage
+	storage infrastructure.Storage
 }
 
-func NewTaskService(storage Storage) *TaskService {
+func NewTaskService(storage infrastructure.Storage) *TaskService {
 	return &TaskService{storage: storage}
 }
