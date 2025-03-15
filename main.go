@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"time"
 )
@@ -43,3 +44,9 @@ func ensureFileExists() error {
 
 	return nil
 }
+
+var (
+	ErrTaskNotFound     = errors.New("tugas tidak ditemukan")
+	ErrInvalidStatus    = errors.New("status tidak valid")
+	ErrEmptyDeskription = errors.New("deskripsi tidak boleh kosong")
+)
