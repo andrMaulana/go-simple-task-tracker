@@ -7,3 +7,11 @@ var (
 	ErrInvalidStatus    = errors.New("status tidak valid")
 	ErrEmptyDescription = errors.New("deksripksi tidak boleh kosong")
 )
+
+type TaskService struct {
+	storage Storage
+}
+
+func NewTaskService(storage Storage) *TaskService {
+	return &TaskService{storage: storage}
+}
