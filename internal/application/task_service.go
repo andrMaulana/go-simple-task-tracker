@@ -41,6 +41,21 @@ func (s *TaskService) AddTask(description string) (domain.Task, error) {
 	return newTask, nil
 }
 
+// method update task
+func (s *TaskService) UpdateTask(id int, description string) error {
+	taskList, _ := s.storage.LoadTasks()
+	for i, task := range taskList.Tasks {
+		if task.ID == id {
+			taskList.Tasks[i].Description = description
+			taskList.Tasks[i].UpdatedAt = time.Now().UTC()
+			s.storage.SaveTasks(taskList)
+			return nil
+		}
+	}
+
+	return ErrTaskNotFound
+}
+
 func generateID(tasks []domain.Task) int {
 	if len(tasks) == 0 {
 		return 1
