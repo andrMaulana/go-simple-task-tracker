@@ -28,3 +28,8 @@ func (s *JsonStorage) LoadTasks() (domain.TaskList, error) {
 	json.Unmarshal(data, &taskList)
 	return taskList, nil
 }
+
+func (s *JsonStorage) SaveTasks(taskList domain.TaskList) error {
+	data, _ := json.MarshalIndent(taskList, "", "  ")
+	return os.WriteFile("tasks.json", data, 0o644)
+}
