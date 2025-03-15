@@ -3,13 +3,14 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"time"
 )
 
 type Task struct {
 	ID          int       `json:"id"`
-	Description string    `json:"deskription"`
+	Description string    `json:"description"`
 	Status      string    `json:"status"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
@@ -50,3 +51,9 @@ var (
 	ErrInvalidStatus    = errors.New("status tidak valid")
 	ErrEmptyDeskription = errors.New("deskripsi tidak boleh kosong")
 )
+
+func main() {
+	ensureFileExists()
+	taskList, _ := loadTasks()
+	fmt.Printf("%+v\n", taskList.Tasks)
+}
