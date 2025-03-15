@@ -2,8 +2,10 @@ package application
 
 import (
 	"errors"
+	"time"
 
 	"github.com/andrMaulana/go-simple-task-tracker/infrastructure"
+	"github.com/andrMaulana/go-simple-task-tracker/internal/domain"
 )
 
 var (
@@ -18,4 +20,23 @@ type TaskService struct {
 
 func NewTaskService(storage infrastructure.Storage) *TaskService {
 	return &TaskService{storage: storage}
+}
+
+// method add task
+func (s *TaskService) AddTask(description string) (domain.Task, error) {
+	if description == "" {
+		return domain.Task{}, ErrEmptyDescription
+	}
+
+	taskList, _ := s.storage.LoadTasks()
+	newTask := domain.Task{
+		ID:          generateID(taskList.Tasks),
+		Description: description,
+		Status:      "todo",
+		CreatedAt:   time.Now().UTC(),
+		UpdatedAt:   time.Now().UTC(),
+	}
+
+	taskList.Tasks = append(taskList.Tasks, newTask)
+	return newTask, nil
 }
