@@ -28,3 +28,9 @@ func loadTasks() (TaskList, error) {
 	json.Unmarshal(data, &taskList)
 	return taskList, nil
 }
+
+// fungsi untuk menulis ke file json
+func saveTask(taskList TaskList) error {
+	data, _ := json.MarshalIndent(taskList, "", "  ")
+	return os.WriteFile("tasks.json", data, 0o644)
+}
