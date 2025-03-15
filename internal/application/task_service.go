@@ -81,6 +81,20 @@ func (s *TaskService) UpdateTaskStatus(id int, status string) error {
 	return ErrTaskNotFound
 }
 
+// method delete task
+func (s *TaskService) DeleteTask(id int) error {
+	taskList, _ := s.storage.LoadTasks()
+	for i, task := range taskList.Tasks {
+		if task.ID == id {
+			taskList.Tasks = append(taskList.Tasks[i:], taskList.Tasks[i+1:]...)
+			s.storage.SaveTasks(taskList)
+			return nil
+		}
+	}
+
+	return ErrTaskNotFound
+}
+
 func generateID(tasks []domain.Task) int {
 	if len(tasks) == 0 {
 		return 1
