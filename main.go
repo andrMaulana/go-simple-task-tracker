@@ -34,3 +34,12 @@ func saveTask(taskList TaskList) error {
 	data, _ := json.MarshalIndent(taskList, "", "  ")
 	return os.WriteFile("tasks.json", data, 0o644)
 }
+
+// fungsi untuk memastikan file `json` ada
+func ensureFileExists() error {
+	if _, err := os.Stat("tasks.json"); os.IsNotExist(err) {
+		return saveTask(TaskList{Tasks: []Task{}})
+	}
+
+	return nil
+}
