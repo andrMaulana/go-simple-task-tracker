@@ -112,3 +112,10 @@ func main() {
 		fmt.Println("Command tidak dikenali")
 	}
 }
+
+func truncateString(s string, max int) string {
+	if len(s) > max {
+		return s[:max-3] + "..."
+	}
+	return s
+}
