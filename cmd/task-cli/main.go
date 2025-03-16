@@ -80,8 +80,17 @@ func main() {
 		var filterStatus string
 		if len(os.Args) > 2 {
 			filterStatus = os.Args[2]
+			validStatus := map[string]bool{
+				"todo":        true,
+				"in-progress": true,
+				"done":        true,
+				"":            true, // Untuk menampilkan semua tugas
+			}
+			if !validStatus[filterStatus] {
+				fmt.Println("Error: Status filter tidak valid")
+				return
+			}
 		}
-
 		tasks, err := service.GetTasks(filterStatus)
 		if err != nil {
 			fmt.Println("Error:", err)
