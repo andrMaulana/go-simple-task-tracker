@@ -54,8 +54,7 @@ func (s *TaskService) UpdateTask(id int, description string) error {
 		if task.ID == id {
 			taskList.Tasks[i].Description = description
 			taskList.Tasks[i].UpdatedAt = time.Now().UTC()
-			s.storage.SaveTasks(taskList)
-			return nil
+			return s.storage.SaveTasks(taskList)
 		}
 	}
 
@@ -68,8 +67,7 @@ func (s *TaskService) DeleteTask(id int) error {
 	for i, task := range taskList.Tasks {
 		if task.ID == id {
 			taskList.Tasks = append(taskList.Tasks[i:], taskList.Tasks[i+1:]...)
-			s.storage.SaveTasks(taskList)
-			return nil
+			return s.storage.SaveTasks(taskList)
 		}
 	}
 
@@ -93,8 +91,7 @@ func (s *TaskService) UpdateTaskStatus(id int, status string) error {
 		if task.ID == id {
 			taskList.Tasks[i].Status = status
 			taskList.Tasks[i].UpdatedAt = time.Now().UTC()
-			s.storage.SaveTasks(taskList)
-			return nil
+			return s.storage.SaveTasks(taskList)
 		}
 	}
 
