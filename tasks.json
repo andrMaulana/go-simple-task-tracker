@@ -6,6 +6,20 @@
       "status": "todo",
       "createdAt": "2023-10-01T12:00:00Z",
       "updatedAt": "2023-10-01T12:00:00Z"
+    },
+    {
+      "id": 2,
+      "description": "Beli bahan makanan",
+      "status": "in-progress",
+      "createdAt": "2025-03-16T05:47:32.90157819Z",
+      "updatedAt": "2025-03-16T05:55:15.51689452Z"
+    },
+    {
+      "id": 3,
+      "description": "Membuat laporan bulanan",
+      "status": "todo",
+      "createdAt": "2025-03-16T05:47:41.892524593Z",
+      "updatedAt": "2025-03-16T05:47:41.892527945Z"
     }
   ]
 }

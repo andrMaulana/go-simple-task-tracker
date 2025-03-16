@@ -28,7 +28,10 @@ func (s *TaskService) AddTask(description string) (domain.Task, error) {
 		return domain.Task{}, ErrEmptyDescription
 	}
 
-	taskList, _ := s.storage.LoadTasks()
+	taskList, err := s.storage.LoadTasks()
+	if err != nil {
+		return domain.Task{}, err
+	}
 	newTask := domain.Task{
 		ID:          generateID(taskList.Tasks),
 		Description: description,
@@ -38,6 +41,9 @@ func (s *TaskService) AddTask(description string) (domain.Task, error) {
 	}
 
 	taskList.Tasks = append(taskList.Tasks, newTask)
+	if err := s.storage.SaveTasks(taskList); err != nil {
+		return domain.Task{}, err
+	}
 	return newTask, nil
 }
 
@@ -56,12 +62,26 @@ func (s *TaskService) UpdateTask(id int, description string) error {
 	return ErrTaskNotFound
 }
 
+// method delete task
+func (s *TaskService) DeleteTask(id int) error {
+	taskList, _ := s.storage.LoadTasks()
+	for i, task := range taskList.Tasks {
+		if task.ID == id {
+			taskList.Tasks = append(taskList.Tasks[i:], taskList.Tasks[i+1:]...)
+			s.storage.SaveTasks(taskList)
+			return nil
+		}
+	}
+
+	return ErrTaskNotFound
+}
+
 // method update status task
 func (s *TaskService) UpdateTaskStatus(id int, status string) error {
 	validStatus := map[string]bool{
-		"todo":       true,
-		"in-progres": true,
-		"done":       true,
+		"todo":        true,
+		"in-progress": true,
+		"done":        true,
 	}
 
 	if !validStatus[status] {
@@ -73,20 +93,6 @@ func (s *TaskService) UpdateTaskStatus(id int, status string) error {
 		if task.ID == id {
 			taskList.Tasks[i].Status = status
 			taskList.Tasks[i].UpdatedAt = time.Now().UTC()
-			s.storage.SaveTasks(taskList)
-			return nil
-		}
-	}
-
-	return ErrTaskNotFound
-}
-
-// method delete task
-func (s *TaskService) DeleteTask(id int) error {
-	taskList, _ := s.storage.LoadTasks()
-	for i, task := range taskList.Tasks {
-		if task.ID == id {
-			taskList.Tasks = append(taskList.Tasks[i:], taskList.Tasks[i+1:]...)
 			s.storage.SaveTasks(taskList)
 			return nil
 		}

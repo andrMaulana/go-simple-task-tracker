@@ -30,6 +30,9 @@ func (s *JsonStorage) LoadTasks() (domain.TaskList, error) {
 }
 
 func (s *JsonStorage) SaveTasks(taskList domain.TaskList) error {
-	data, _ := json.MarshalIndent(taskList, "", "  ")
+	data, err := json.MarshalIndent(taskList, "", "  ")
+	if err != nil {
+		return err
+	}
 	return os.WriteFile("tasks.json", data, 0o644)
 }

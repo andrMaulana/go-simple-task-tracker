@@ -57,7 +57,7 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println("Tugas #%d berhasil di hapus\n", id)
+		fmt.Printf("Tugas #%d berhasil di hapus\n", id)
 
 	case "mark-in-progress", "mark-done":
 		if len(os.Args) < 3 {
