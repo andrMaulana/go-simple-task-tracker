@@ -95,6 +95,23 @@ func (s *TaskService) DeleteTask(id int) error {
 	return ErrTaskNotFound
 }
 
+// method filter task
+func (s *TaskService) GetTasks(filterStatus string) ([]domain.Task, error) {
+	taskList, err := s.storage.LoadTasks()
+	if err != nil {
+		return nil, err
+	}
+
+	var filteredTasks []domain.Task
+	for _, task := range taskList.Tasks {
+		if filterStatus == "" || task.Status == filterStatus {
+			filteredTasks = append(filteredTasks, task)
+		}
+	}
+
+	return filteredTasks, nil
+}
+
 func generateID(tasks []domain.Task) int {
 	if len(tasks) == 0 {
 		return 1
