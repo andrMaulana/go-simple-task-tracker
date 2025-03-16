@@ -11,7 +11,7 @@ import (
 
 func main() {
 	storage := infrastructure.NewJsonStorage()
-	service := application.NewTaskService()
+	service := application.NewTaskService(storage)
 
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: task-cli <command> [args]")
