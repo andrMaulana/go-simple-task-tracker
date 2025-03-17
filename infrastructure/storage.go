@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/andrMaulana/go-simple-task-tracker/internal/domain"
@@ -19,13 +20,24 @@ func NewJsonStorage() *JsonStorage {
 }
 
 func (s *JsonStorage) LoadTasks() (domain.TaskList, error) {
-	var taskList domain.TaskList
 	data, err := os.ReadFile("tasks.json")
 	if err != nil {
-		return taskList, err
+		if os.IsNotExist(err) {
+			// jika file tidak ada, buat file kosong
+			emptyTaskList := domain.TaskList{Tasks: []domain.Task{}}
+			s.SaveTasks(emptyTaskList)
+			return emptyTaskList, nil
+		}
+
+		return domain.TaskList{}, err
 	}
 
-	json.Unmarshal(data, &taskList)
+	var taskList domain.TaskList
+	err = json.Unmarshal(data, &taskList)
+	if err != nil {
+		return domain.TaskList{}, fmt.Errorf("format file tasks.json tidak valid: %v", err)
+	}
+
 	return taskList, nil
 }
 
