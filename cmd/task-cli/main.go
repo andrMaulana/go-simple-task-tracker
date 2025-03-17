@@ -54,7 +54,7 @@ func main() {
 		id, _ := strconv.Atoi(os.Args[2])
 		err := service.DeleteTask(id)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Error:", err)
 			return
 		}
 		fmt.Printf("Tugas #%d berhasil di hapus\n", id)
@@ -64,16 +64,20 @@ func main() {
 			fmt.Println("Error: ID harus diisi")
 			return
 		}
-		id, _ := strconv.Atoi(os.Args[2])
+		id, err := strconv.Atoi(os.Args[2])
+		if err != nil {
+			fmt.Println("Error: ID harus berupa angka")
+		}
 		status := "in-progress"
 		if command == "mark-done" {
 			status = "done"
 		}
-		err := service.UpdateTaskStatus(id, status)
+		err = service.UpdateTaskStatus(id, status)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Error:", err)
 			return
 		}
+
 		fmt.Printf("Status tugas #%d diubah ke '%s'\n", id, status)
 
 	case "list":
