@@ -9,7 +9,14 @@ import (
 	"github.com/andrMaulana/go-simple-task-tracker/internal/application"
 )
 
+const version = "1.0.0" // Versi awal
+
 func main() {
+	if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
+		fmt.Printf("Task Tracker CLI v%s\n", version)
+		return
+	}
+
 	storage := infrastructure.NewJsonStorage()
 	service := application.NewTaskService(storage)
 
