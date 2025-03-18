@@ -160,6 +160,33 @@ func (s *TaskService) SearchTasks(keyword string) ([]domain.Task, error) {
 	return results, nil
 }
 
+// method filter by deadline
+func (s *TaskService) GetTasksByDeadline(filter string) ([]domain.Task, error) {
+	taskList, err := s.storage.LoadTasks()
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now().UTC()
+	var results []domain.Task
+	for _, task := range taskList.Tasks {
+		if task.DueDate == nil {
+			continue
+		}
+		switch filter {
+		case "overdue":
+			if task.DueDate.Before(now) {
+				results = append(results, task)
+			}
+		case "upcoming":
+			if task.DueDate.After(now) {
+				results = append(results, task)
+			}
+		}
+	}
+	return results, nil
+}
+
 func generateID(tasks []domain.Task) int {
 	if len(tasks) == 0 {
 		return 1
