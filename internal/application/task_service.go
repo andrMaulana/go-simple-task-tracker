@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -24,7 +25,7 @@ func NewTaskService(storage infrastructure.Storage) *TaskService {
 }
 
 // method add task
-func (s *TaskService) AddTask(description string) (domain.Task, error) {
+func (s *TaskService) AddTask(description, dueDateStr string) (domain.Task, error) {
 	if description == "" {
 		return domain.Task{}, ErrEmptyDescription
 	}
@@ -33,10 +34,20 @@ func (s *TaskService) AddTask(description string) (domain.Task, error) {
 	if err != nil {
 		return domain.Task{}, err
 	}
+
+	var dueDate *time.Time
+	if dueDateStr != "" {
+		parseDate, err := time.Parse("2006-01-02", dueDateStr)
+		if err != nil {
+			return domain.Task{}, fmt.Errorf("format tanggal tidak valid (harus YYYY-MM-DD)")
+		}
+		dueDate = &parseDate
+	}
 	newTask := domain.Task{
 		ID:          generateID(taskList.Tasks),
 		Description: description,
 		Status:      "todo",
+		DueDate:     dueDate,
 		CreatedAt:   time.Now().UTC(),
 		UpdatedAt:   time.Now().UTC(),
 	}
