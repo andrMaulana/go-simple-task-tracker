@@ -20,6 +20,13 @@
       "status": "todo",
       "createdAt": "2025-03-16T05:47:41.892524593Z",
       "updatedAt": "2025-03-16T05:47:41.892527945Z"
+    },
+    {
+      "id": 4,
+      "description": "Beli Bahan Minuman",
+      "status": "todo",
+      "createdAt": "2025-03-18T10:29:32.875336461Z",
+      "updatedAt": "2025-03-18T10:29:32.875343096Z"
     }
   ]
 }
