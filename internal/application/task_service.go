@@ -60,16 +60,31 @@ func (s *TaskService) AddTask(description, dueDateStr string) (domain.Task, erro
 }
 
 // method update task
-func (s *TaskService) UpdateTask(id int, description string) error {
-	taskList, _ := s.storage.LoadTasks()
+func (s *TaskService) UpdateTaskWithDueDate(id int, description string, dueDateStr string) error {
+	taskList, err := s.storage.LoadTasks()
+	if err != nil {
+		return err
+	}
+
+	var dueDate *time.Time
+	if dueDateStr != "" {
+		parsedDate, err := time.Parse("2006-01-02", dueDateStr)
+		if err != nil {
+			return fmt.Errorf("format tanggal tidak valid (harus YYYY-MM-DD)")
+		}
+		dueDate = &parsedDate
+	}
+
 	for i, task := range taskList.Tasks {
 		if task.ID == id {
 			taskList.Tasks[i].Description = description
+			if dueDate != nil || dueDateStr == "" { // Jika dueDateStr kosong, hapus deadline
+				taskList.Tasks[i].DueDate = dueDate
+			}
 			taskList.Tasks[i].UpdatedAt = time.Now().UTC()
 			return s.storage.SaveTasks(taskList)
 		}
 	}
-
 	return ErrTaskNotFound
 }
 

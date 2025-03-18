@@ -47,16 +47,42 @@ func main() {
 
 	case "update":
 		if len(os.Args) < 4 {
-			fmt.Println("Error: ID dan deskripsi baru harus diisi")
+			fmt.Println("Error: ID dan deskripsi harus diisi")
 			return
 		}
-		id, _ := strconv.Atoi(os.Args[2])
-		newDescription := os.Args[3]
-		err := service.UpdateTask(id, newDescription)
+
+		// Parsing argumen
+		id, err := strconv.Atoi(os.Args[2])
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Error: ID harus berupa angka")
 			return
 		}
+
+		// Cari flag --due
+		newDescription := ""
+		dueDate := ""
+		for i := 3; i < len(os.Args); i++ {
+			arg := os.Args[i]
+			if strings.HasPrefix(arg, "--due=") {
+				dueDate = strings.TrimPrefix(arg, "--due=")
+			} else {
+				newDescription = arg // Ambil deskripsi baru
+			}
+		}
+
+		// Validasi deskripsi tidak boleh kosong
+		if newDescription == "" {
+			fmt.Println("Error: Deskripsi tidak boleh kosong")
+			return
+		}
+
+		// Panggil service
+		err = service.UpdateTaskWithDueDate(id, newDescription, dueDate)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+		fmt.Printf("Tugas #%d berhasil diperbarui\n", id)
 
 	case "delete":
 		if len(os.Args) < 3 {

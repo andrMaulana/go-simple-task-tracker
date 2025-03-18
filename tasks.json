@@ -4,6 +4,7 @@
       "id": 1,
       "description": "Mengedit Tugas",
       "status": "in-progress",
+      "priority": "",
       "createdAt": "2023-10-01T12:00:00Z",
       "updatedAt": "2025-03-17T15:58:49.109108165Z"
     },
@@ -11,6 +12,7 @@
       "id": 2,
       "description": "Beli bahan makanan",
       "status": "in-progress",
+      "priority": "",
       "createdAt": "2025-03-16T05:47:32.90157819Z",
       "updatedAt": "2025-03-16T05:55:15.51689452Z"
     },
@@ -18,6 +20,7 @@
       "id": 3,
       "description": "Membuat laporan bulanan",
       "status": "todo",
+      "priority": "",
       "createdAt": "2025-03-16T05:47:41.892524593Z",
       "updatedAt": "2025-03-16T05:47:41.892527945Z"
     },
@@ -25,8 +28,18 @@
       "id": 4,
       "description": "Beli Bahan Minuman",
       "status": "todo",
+      "priority": "",
       "createdAt": "2025-03-18T10:29:32.875336461Z",
       "updatedAt": "2025-03-18T10:29:32.875343096Z"
+    },
+    {
+      "id": 5,
+      "description": "ubah laporan Q3",
+      "status": "todo",
+      "priority": "",
+      "dueDate": "2025-03-31T00:00:00Z",
+      "createdAt": "2025-03-18T11:01:10.332871199Z",
+      "updatedAt": "2025-03-18T11:02:56.108015368Z"
     }
   ]
 }
