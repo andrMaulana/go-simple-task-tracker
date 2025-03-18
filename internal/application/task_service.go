@@ -2,6 +2,7 @@ package application
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/andrMaulana/go-simple-task-tracker/infrastructure"
@@ -113,6 +114,24 @@ func (s *TaskService) GetTasks(filterStatus string) ([]domain.Task, error) {
 	}
 
 	return filteredTasks, nil
+}
+
+// method pencarian task
+func (s *TaskService) SearchTasks(keyword string) ([]domain.Task, error) {
+	taskList, err := s.storage.LoadTasks()
+	if err != nil {
+		return nil, err
+	}
+
+	var results []domain.Task
+	lowerKeyword := strings.ToLower(keyword)
+	for _, task := range taskList.Tasks {
+		if strings.Contains(strings.ToLower(task.Description), lowerKeyword) {
+			results = append(results, task)
+		}
+	}
+
+	return results, nil
 }
 
 func generateID(tasks []domain.Task) int {
