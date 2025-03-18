@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/andrMaulana/go-simple-task-tracker/infrastructure"
 	"github.com/andrMaulana/go-simple-task-tracker/internal/application"
@@ -33,7 +34,11 @@ func main() {
 			return
 		}
 		description := os.Args[2]
-		task, err := service.AddTask(description)
+		dueDate := ""
+		if len(os.Args) > 3 && strings.HasPrefix(os.Args[3], "--due=") {
+			dueDate = strings.TrimPrefix(os.Args[3], "--due=")
+		}
+		task, err := service.AddTask(description, dueDate)
 		if err != nil {
 			fmt.Println(err)
 			return
