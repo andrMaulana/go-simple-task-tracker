@@ -127,6 +127,37 @@ func main() {
 				updatedAt,
 			)
 		}
+	case "search":
+		if len(os.Args) < 3 {
+			fmt.Println("Error: Keyword harus diisi")
+			return
+		}
+		keyword := os.Args[2]
+		tasks, err := service.SearchTasks(keyword)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		if len(tasks) == 0 {
+			fmt.Println("Tidak ada tugas yang cocok dengan kata kunci")
+			return
+		}
+
+		// Format output sebagai tabel
+		fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
+		fmt.Println("-------------------------------------------------------------------------------------")
+		for _, task := range tasks {
+			createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
+			updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
+			fmt.Printf("%-5d %-30s %-15s %-20s %-20s\n",
+				task.ID,
+				truncateString(task.Description, 30),
+				task.Status,
+				createdAt,
+				updatedAt,
+			)
+		}
 
 	default:
 		fmt.Println("Command tidak dikenali")
