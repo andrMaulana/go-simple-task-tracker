@@ -25,7 +25,7 @@ func NewTaskService(storage infrastructure.Storage) *TaskService {
 }
 
 // method add task
-func (s *TaskService) AddTask(description, dueDateStr string) (domain.Task, error) {
+func (s *TaskService) AddTask(description, dueDateStr, priority string) (domain.Task, error) {
 	if description == "" {
 		return domain.Task{}, ErrEmptyDescription
 	}
@@ -33,6 +33,16 @@ func (s *TaskService) AddTask(description, dueDateStr string) (domain.Task, erro
 	taskList, err := s.storage.LoadTasks()
 	if err != nil {
 		return domain.Task{}, err
+	}
+
+	// Validasi prioritas
+	validPriorities := map[string]bool{
+		"high":   true,
+		"medium": true,
+		"low":    true,
+	}
+	if priority != "" && !validPriorities[priority] {
+		return domain.Task{}, fmt.Errorf("prioritas tidak valid (harus high, medium, low)")
 	}
 
 	var dueDate *time.Time
@@ -47,6 +57,7 @@ func (s *TaskService) AddTask(description, dueDateStr string) (domain.Task, erro
 		ID:          generateID(taskList.Tasks),
 		Description: description,
 		Status:      "todo",
+		Priority:    priority,
 		DueDate:     dueDate,
 		CreatedAt:   time.Now().UTC(),
 		UpdatedAt:   time.Now().UTC(),

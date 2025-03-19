@@ -6,8 +6,8 @@ type Task struct {
 	ID          int        `json:"id"`
 	Description string     `json:"description"`
 	Status      string     `json:"status"`
-	Priority    string     `json:"priority"`          // Akan diimplementasi di fase 3
-	DueDate     *time.Time `json:"dueDate,omitempty"` // Nullable
+	Priority    string     `json:"priority"`
+	DueDate     *time.Time `json:"dueDate,omitempty"`
 	CreatedAt   time.Time  `json:"createdAt"`
 	UpdatedAt   time.Time  `json:"updatedAt"`
 }
