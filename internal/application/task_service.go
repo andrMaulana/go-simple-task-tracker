@@ -71,10 +71,20 @@ func (s *TaskService) AddTask(description, dueDateStr, priority string) (domain.
 }
 
 // method update task
-func (s *TaskService) UpdateTaskWithDueDate(id int, description string, dueDateStr string) error {
+func (s *TaskService) UpdateTaskWithDueDate(id int, description string, dueDateStr, priority string) error {
 	taskList, err := s.storage.LoadTasks()
 	if err != nil {
 		return err
+	}
+
+	// Validasi prioritas
+	validPriorities := map[string]bool{
+		"high":   true,
+		"medium": true,
+		"low":    true,
+	}
+	if priority != "" && !validPriorities[priority] {
+		return fmt.Errorf("prioritas tidak valid (harus high, medium, low)")
 	}
 
 	var dueDate *time.Time
@@ -92,6 +102,7 @@ func (s *TaskService) UpdateTaskWithDueDate(id int, description string, dueDateS
 			if dueDate != nil || dueDateStr == "" { // Jika dueDateStr kosong, hapus deadline
 				taskList.Tasks[i].DueDate = dueDate
 			}
+			taskList.Tasks[i].Priority = priority
 			taskList.Tasks[i].UpdatedAt = time.Now().UTC()
 			return s.storage.SaveTasks(taskList)
 		}
