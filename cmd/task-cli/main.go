@@ -8,6 +8,7 @@ import (
 
 	"github.com/andrMaulana/go-simple-task-tracker/infrastructure"
 	"github.com/andrMaulana/go-simple-task-tracker/internal/application"
+	"github.com/andrMaulana/go-simple-task-tracker/internal/domain"
 )
 
 const version = "1.0.0" // Versi awal
@@ -119,44 +120,84 @@ func main() {
 		fmt.Printf("Status tugas #%d diubah ke '%s'\n", id, status)
 
 	case "list":
-		var filterStatus string
 		if len(os.Args) > 2 {
-			filterStatus = os.Args[2]
-			validStatus := map[string]bool{
-				"todo":        true,
-				"in-progress": true,
-				"done":        true,
-				"":            true, // Untuk menampilkan semua tugas
+			filter := os.Args[2]
+			var tasks []domain.Task
+			var err error
+
+			switch filter {
+			case "overdue", "upcoming":
+				tasks, err = service.GetTasksByDeadline(filter)
+				if err != nil {
+					fmt.Println("Error:", err)
+					return
+				}
+
+			default:
+				// Handle filter status (todo, in-progress, done)
+				tasks, err = service.GetTasks(filter)
+				if err != nil {
+					fmt.Println("Error:", err)
+					return
+				}
 			}
-			if !validStatus[filterStatus] {
-				fmt.Println("Error: Status filter tidak valid")
+
+			if len(tasks) == 0 {
+				fmt.Println("Tidak ada tugas yang tersedia")
 				return
 			}
-		}
-		tasks, err := service.GetTasks(filterStatus)
-		if err != nil {
-			fmt.Println("Error:", err)
-			return
-		}
 
-		if len(tasks) == 0 {
-			fmt.Println("Tidak ada tugas yang tersedia")
-			return
-		}
+			// Format output sebagai tabel
+			fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
+			fmt.Println("-------------------------------------------------------------------------------------")
+			for _, task := range tasks {
+				createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
+				updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
+				dueDate := "-"
+				if task.DueDate != nil {
+					dueDate = task.DueDate.Local().Format("2006-01-02")
+				}
+				fmt.Printf("%-5d %-30s %-15s %-20s %-20s (Deadline: %s)\n",
+					task.ID,
+					truncateString(task.Description, 30),
+					task.Status,
+					createdAt,
+					updatedAt,
+					dueDate,
+				)
+			}
+		} else {
+			// Tampilkan semua tugas jika tidak ada filter
+			tasks, err := service.GetTasks("")
+			if err != nil {
+				fmt.Println("Error:", err)
+				return
+			}
 
-		// Format output sebagai tabel
-		fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
-		fmt.Println("-------------------------------------------------------------------------------------")
-		for _, task := range tasks {
-			createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
-			updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
-			fmt.Printf("%-5d %-30s %-15s %-20s %-20s\n",
-				task.ID,
-				truncateString(task.Description, 30),
-				task.Status,
-				createdAt,
-				updatedAt,
-			)
+			if len(tasks) == 0 {
+				fmt.Println("Tidak ada tugas yang tersedia")
+				return
+			}
+
+			// Format output sebagai tabel
+			fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
+			fmt.Println("-------------------------------------------------------------------------------------")
+			for _, task := range tasks {
+				createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
+				updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
+				dueDate := "-"
+				if task.DueDate != nil {
+					dueDate = task.DueDate.Local().Format("2006-01-02")
+				}
+				fmt.Printf("%-5d %-30s %-15s %-20s %-20s (Deadline: %s)\n",
+					task.ID,
+					truncateString(task.Description, 30),
+					task.Status,
+					createdAt,
+					updatedAt,
+					dueDate,
+				)
+			}
 		}
 	case "search":
 		if len(os.Args) < 3 {
