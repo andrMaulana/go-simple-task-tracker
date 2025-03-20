@@ -110,6 +110,8 @@ func (s *TaskService) UpdateTaskWithDueDate(id int, description string, dueDateS
 	return ErrTaskNotFound
 }
 
+// persiapan fitur baru
+
 // method delete task
 func (s *TaskService) DeleteTask(id int) error {
 	taskList, _ := s.storage.LoadTasks()
