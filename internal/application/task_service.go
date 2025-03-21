@@ -150,7 +150,7 @@ func (s *TaskService) UpdateTaskStatus(id int, status string) error {
 }
 
 // method filter task
-func (s *TaskService) GetTasks(filterStatus string) ([]domain.Task, error) {
+func (s *TaskService) GetTasks(filterStatus, filterPriority string) ([]domain.Task, error) {
 	taskList, err := s.storage.LoadTasks()
 	if err != nil {
 		return nil, err
@@ -158,7 +158,7 @@ func (s *TaskService) GetTasks(filterStatus string) ([]domain.Task, error) {
 
 	var filteredTasks []domain.Task
 	for _, task := range taskList.Tasks {
-		if filterStatus == "" || task.Status == filterStatus {
+		if (filterStatus == "" || task.Status == filterStatus) && (filterPriority == "" || task.Priority == filterPriority) {
 			filteredTasks = append(filteredTasks, task)
 		}
 	}
