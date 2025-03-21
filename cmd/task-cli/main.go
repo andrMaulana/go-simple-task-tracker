@@ -71,10 +71,13 @@ func main() {
 		// Cari flag --due
 		newDescription := ""
 		dueDate := ""
+		priority := ""
 		for i := 3; i < len(os.Args); i++ {
 			arg := os.Args[i]
 			if strings.HasPrefix(arg, "--due=") {
 				dueDate = strings.TrimPrefix(arg, "--due=")
+			} else if strings.HasPrefix(arg, "--priority=") {
+				priority = strings.TrimPrefix(arg, "--priority=")
 			} else {
 				newDescription = arg // Ambil deskripsi baru
 			}
@@ -87,7 +90,7 @@ func main() {
 		}
 
 		// Panggil service
-		err = service.UpdateTaskWithDueDate(id, newDescription, dueDate)
+		err = service.UpdateTaskWithDueDate(id, newDescription, dueDate, priority)
 		if err != nil {
 			fmt.Println("Error:", err)
 			return
