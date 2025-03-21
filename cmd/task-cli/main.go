@@ -36,10 +36,19 @@ func main() {
 		}
 		description := os.Args[2]
 		dueDate := ""
-		if len(os.Args) > 3 && strings.HasPrefix(os.Args[3], "--due=") {
-			dueDate = strings.TrimPrefix(os.Args[3], "--due=")
+		priority := ""
+
+		for i := 3; i < len(os.Args); i++ {
+			arg := os.Args[i]
+			switch {
+			case strings.HasPrefix(arg, "--due="):
+				dueDate = strings.TrimPrefix(arg, "--due=")
+			case strings.HasPrefix(arg, "--priority="):
+				priority = strings.TrimPrefix(arg, "--priority=")
+			}
 		}
-		task, err := service.AddTask(description, dueDate)
+
+		task, err := service.AddTask(description, dueDate, priority)
 		if err != nil {
 			fmt.Println(err)
 			return
