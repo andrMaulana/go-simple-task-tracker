@@ -72,7 +72,7 @@ func main() {
 		newDescription := ""
 		dueDate := ""
 		priority := ""
-		for i := 3; i < len(os.Args); i++ {
+		for i := 4; i < len(os.Args); i++ {
 			arg := os.Args[i]
 			if strings.HasPrefix(arg, "--due=") {
 				dueDate = strings.TrimPrefix(arg, "--due=")
