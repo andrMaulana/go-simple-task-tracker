@@ -134,6 +134,7 @@ func main() {
 	case "list":
 		// persiapan implementasi fitur priority
 		if len(os.Args) > 2 {
+			// tata letak implementasi fitur priority
 			filter := os.Args[2]
 			var tasks []domain.Task
 			var err error
