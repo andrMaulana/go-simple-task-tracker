@@ -132,6 +132,7 @@ func main() {
 		fmt.Printf("Status tugas #%d diubah ke '%s'\n", id, status)
 
 	case "list":
+		// persiapan implementasi fitur priority
 		if len(os.Args) > 2 {
 			filter := os.Args[2]
 			var tasks []domain.Task
