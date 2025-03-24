@@ -11,8 +11,7 @@ import (
 	"github.com/andrMaulana/go-simple-task-tracker/internal/domain"
 )
 
-const version = "1.0.0" // Versi awal
-
+const version = "1.1.0" // Versi awal
 func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
 		fmt.Printf("Task Tracker CLI v%s\n", version)
