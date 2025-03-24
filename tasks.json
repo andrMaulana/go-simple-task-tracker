@@ -40,6 +40,15 @@
       "dueDate": "2025-03-31T00:00:00Z",
       "createdAt": "2025-03-18T11:01:10.332871199Z",
       "updatedAt": "2025-03-18T11:02:56.108015368Z"
+    },
+    {
+      "id": 6,
+      "description": "Buat laporan Q4",
+      "status": "todo",
+      "priority": "medium",
+      "dueDate": "2023-12-31T00:00:00Z",
+      "createdAt": "2025-03-24T09:42:46.22623573Z",
+      "updatedAt": "2025-03-24T09:42:46.226238943Z"
     }
   ]
 }

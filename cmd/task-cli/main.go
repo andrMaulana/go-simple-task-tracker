@@ -132,90 +132,52 @@ func main() {
 		fmt.Printf("Status tugas #%d diubah ke '%s'\n", id, status)
 
 	case "list":
-		// persiapan implementasi fitur priority
-		// test
-		// test 1
-		// test 2
+		var filterStatus, filterPriority string
 		if len(os.Args) > 2 {
-			// tata letak implementasi fitur priority
 			filter := os.Args[2]
-			var tasks []domain.Task
-			var err error
 
-			switch filter {
-			case "overdue", "upcoming":
-				tasks, err = service.GetTasksByDeadline(filter)
+			// Handle filter untuk deadline (overdue/upcoming)
+			if filter == "overdue" || filter == "upcoming" {
+				tasks, err := service.GetTasksByDeadline(filter)
 				if err != nil {
 					fmt.Println("Error:", err)
 					return
 				}
 
-			default:
-				// Handle filter status (todo, in-progress, done)
-				tasks, err = service.GetTasks(filter)
-				if err != nil {
-					fmt.Println("Error:", err)
+				if len(tasks) == 0 {
+					fmt.Println("Tidak ada tugas yang tersedia")
 					return
 				}
-			}
 
-			if len(tasks) == 0 {
-				fmt.Println("Tidak ada tugas yang tersedia")
+				displayTasks(tasks)
 				return
 			}
 
-			// Format output sebagai tabel
-			fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
-			fmt.Println("-------------------------------------------------------------------------------------")
-			for _, task := range tasks {
-				createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
-				updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
-				dueDate := "-"
-				if task.DueDate != nil {
-					dueDate = task.DueDate.Local().Format("2006-01-02")
-				}
-				fmt.Printf("%-5d %-30s %-15s %-20s %-20s (Deadline: %s)\n",
-					task.ID,
-					truncateString(task.Description, 30),
-					task.Status,
-					createdAt,
-					updatedAt,
-					dueDate,
-				)
-			}
-		} else {
-			// Tampilkan semua tugas jika tidak ada filter
-			tasks, err := service.GetTasks("")
-			if err != nil {
-				fmt.Println("Error:", err)
-				return
-			}
-
-			if len(tasks) == 0 {
-				fmt.Println("Tidak ada tugas yang tersedia")
-				return
-			}
-
-			// Format output sebagai tabel
-			fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
-			fmt.Println("-------------------------------------------------------------------------------------")
-			for _, task := range tasks {
-				createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
-				updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
-				dueDate := "-"
-				if task.DueDate != nil {
-					dueDate = task.DueDate.Local().Format("2006-01-02")
-				}
-				fmt.Printf("%-5d %-30s %-15s %-20s %-20s (Deadline: %s)\n",
-					task.ID,
-					truncateString(task.Description, 30),
-					task.Status,
-					createdAt,
-					updatedAt,
-					dueDate,
-				)
+			// Handle filter untuk prioritas (high, medium, low)
+			validPriorities := map[string]bool{"high": true, "medium": true, "low": true}
+			if validPriorities[filter] {
+				filterPriority = filter
+			} else {
+				// Handle filter untuk status (todo, in-progress, done)
+				filterStatus = filter
 			}
 		}
+
+		// Ambil tugas berdasarkan filter status dan prioritas
+		tasks, err := service.GetTasks(filterStatus, filterPriority)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return
+		}
+
+		if len(tasks) == 0 {
+			fmt.Println("Tidak ada tugas yang tersedia")
+			return
+		}
+
+		// Format output sebagai tabel
+		displayTasks(tasks)
+
 	case "search":
 		if len(os.Args) < 3 {
 			fmt.Println("Error: Keyword harus diisi")
@@ -258,4 +220,30 @@ func truncateString(s string, max int) string {
 		return s[:max-3] + "..."
 	}
 	return s
+}
+
+func displayTasks(tasks []domain.Task) {
+	fmt.Printf("%-5s %-30s %-15s %-20s %-20s\n", "ID", "Deskripsi", "Status", "Dibuat", "Diperbarui")
+	fmt.Println("-------------------------------------------------------------------------------------")
+	for _, task := range tasks {
+		createdAt := task.CreatedAt.Local().Format("2006-01-02 15:04:05")
+		updatedAt := task.UpdatedAt.Local().Format("2006-01-02 15:04:05")
+		priority := "-"
+		if task.Priority != "" {
+			priority = strings.ToUpper(task.Priority)
+		}
+		dueDate := "-"
+		if task.DueDate != nil {
+			dueDate = task.DueDate.Local().Format("2006-01-02")
+		}
+		fmt.Printf("%-5d %-30s %-15s %-20s %-20s (Prioritas: %s, Deadline: %s)\n",
+			task.ID,
+			truncateString(task.Description, 30),
+			task.Status,
+			createdAt,
+			updatedAt,
+			priority,
+			dueDate,
+		)
+	}
 }
